@@ -3,38 +3,56 @@
 - [Table of Contents](#table-of-contents)
 - [Idempotência](#idempotência)
 - [Sincronização de Relógios Físicos](#sincronização-de-relógios-físicos)
-    - [Sincronização Externa](#sincronização-externa)
-    - [Sincronização Interna](#sincronização-interna)
+    - [Sincronização Externa:](#sincronização-externa)
+    - [Sincronização Interna:](#sincronização-interna)
   - [Algoritmo de Cristian](#algoritmo-de-cristian)
   - [Algoritmo de Berkeley](#algoritmo-de-berkeley)
 - [Relógios Lógicos](#relógios-lógicos)
-  - [Relógios de Lamport](#relógios-de-lamport)
-    - [Limitações](#limitações)
-  - [Relógios vetoriais](#relógios-vetoriais)
+  - [Relógios de Lamport:](#relógios-de-lamport)
+    - [Limitações:](#limitações)
+  - [Relógios vetoriais:](#relógios-vetoriais)
+    - [Exemplo mais complexo:](#exemplo-mais-complexo)
 - [Exclusão Mútua Distribuída](#exclusão-mútua-distribuída)
   - [Ricard-Agrawala](#ricard-agrawala)
+    - [Exemplo:](#exemplo)
+      - [23)](#23)
+      - [24)](#24)
   - [Algoritmo de Maekawa](#algoritmo-de-maekawa)
+    - [Exemplo:](#exemplo-1)
 - [Estados Globais](#estados-globais)
   - [Corte Coerente](#corte-coerente)
+    - [Exemplo:](#exemplo-2)
   - [Algoritmo de Chandy-Lamport](#algoritmo-de-chandy-lamport)
+    - [Exemplo Simples](#exemplo-simples)
+    - [Exemplo Mais Complexo](#exemplo-mais-complexo-1)
 - [Eleição de Líder](#eleição-de-líder)
   - [Eleição em Anel](#eleição-em-anel)
+    - [Exercício:](#exercício)
   - [Bully Algorithm](#bully-algorithm)
+    - [Exercício:](#exercício-1)
 - [Registos](#registos)
     - ["Atomic"](#atomic)
     - ["Regular"](#regular)
     - ["Safe"](#safe)
     - ["Unsafe"](#unsafe)
+    - [Exemplos de todos:](#exemplos-de-todos)
   - [ABD Algorithm](#abd-algorithm)
+    - [Exemplo complexo do processo](#exemplo-complexo-do-processo)
+    - [Exemplos simples](#exemplos-simples)
 - [Espaços de Tuplos](#espaços-de-tuplos)
-    - [Xu-Liskov](#xu-liskov)
+    - [Xu-Liskov:](#xu-liskov)
+    - [Exemplo](#exemplo-3)
 - [Teorema CAP](#teorema-cap)
 - [Replicação Fracamente Coerente](#replicação-fracamente-coerente)
   - [Gossip Architecture](#gossip-architecture)
-    - [Dentro de cada réplica](#dentro-de-cada-réplica)
-    - [Pedidos de leitura](#pedidos-de-leitura)
+    - [Dentro de cada réplica:](#dentro-de-cada-réplica)
+    - [Pedidos de leitura:](#pedidos-de-leitura)
     - [Pedidos de modificação](#pedidos-de-modificação)
     - [Propagação de modificações](#propagação-de-modificações)
+    - [Exercício](#exercício-2)
+      - [43)](#43)
+      - [44)](#44)
+    - [Exercício 2](#exercício-2)
   - [Garantias de Sessão Mais Fracas](#garantias-de-sessão-mais-fracas)
 - [Replicação](#replicação)
     - [Primário-secundário (replicação passiva)](#primário-secundário-replicação-passiva)
@@ -43,8 +61,11 @@
 - [Difusão em Ordem Total](#difusão-em-ordem-total)
     - [Há dois algorimos para o caso sem falhas](#há-dois-algorimos-para-o-caso-sem-falhas)
   - [Acordo Coletivo](#acordo-coletivo)
+      - [51) 4](#51-4)
+      - [52) B, pois está marcada como "final" na posição 2 e A foi determinada como sendo 4](#52-b-pois-está-marcada-como-final-na-posição-2-e-a-foi-determinada-como-sendo-4)
+      - [53) 6](#53-6)
 - [Sincronia na Vista](#sincronia-na-vista)
-    - [Difusão fiável síncrona na vista](#difusão-fiável-síncrona-na-vista)
+    - [Difusão fiável síncrona na vista:](#difusão-fiável-síncrona-na-vista)
       - [Violar sincronia na vista: mensagem enviada em uma vista é recebida em outra](#violar-sincronia-na-vista-mensagem-enviada-em-uma-vista-é-recebida-em-outra)
       - [Violar difusão fiável regular/atómica](#violar-difusão-fiável-regularatómica)
 - [Consenso](#consenso)
@@ -61,6 +82,14 @@
   - [Assinaturas Digitais](#assinaturas-digitais)
     - [Com chaves simétricas](#com-chaves-simétricas)
     - [Com chaves assimétricas](#com-chaves-assimétricas)
+    - [Um exercício para solidificar tudo](#um-exercício-para-solidificar-tudo)
+      - [67 e 68)](#67-e-68)
+      - [69)](#69)
+      - [70)](#70)
+      - [71)](#71)
+      - [72)](#72)
+    - [Resumindo:](#resumindo)
+    - [Exemplo de envio de mensagem assinada (sem encriptar)](#exemplo-de-envio-de-mensagem-assinada-sem-encriptar)
 
 
 # Idempotência
@@ -510,7 +539,7 @@ Quando réplica $i$ recebe o pedido vindo do cliente:
 
 $S1$ e $S2$ não retornam, pois $pedido.prev$ não é $\le replicaTS$.
 
-$S3$ retorna, pois $(2,5,5) \le (2,5,8)$. O relógio vetorial retornado é (2,5,8).
+$S3$ retorna, pois $(2,5,5) \le (2,5,8)$. O relógio vetorial retornado é $(2,5,8)$.
 
 #### 44)
 
@@ -521,12 +550,12 @@ $S1$, $S2$ e $S3$ incrementam a sua respectiva entrada do seu $replicaTS$
   - $S2 = (1,7,7)$
   - $S3 = (2,5,9)$
 
-Como $pedido.prev_i \le replicaTS_i$ para todas as réplicas, cada uma delas retorna $pedido.prev$ com a sua entrada $i$ substituída pelo seu novo valor de $replicaTS_i$. Isto é:
+Cada uma delas retorna $pedido.prev$ com a sua entrada $i$ substituída pelo seu novo valor de $replicaTS_i$. Isto é:
 - $S1$ retorna $(3,5,5)$
 - $S2$ retorna $(2,7,5)$
 - $S3$ retorna $(2,5,9)$
 
-Nenhum deles executa o pedido localmente, pois em nenhuma réplica $pedido.prev \le valueTS$. Pela mesma razão, $valueTS$ não é atualizado em nenhuma réplica.
+Só $S3$ executa a operação localmente, pois $pedido.prev \le valueTS$. Depois, atualiza $valueTS$ para $(2,5,9)$
 
 ---
 
