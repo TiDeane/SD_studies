@@ -287,9 +287,23 @@ Em outras palavras, um corte é coerente se **todas as mensagens recebidas foram
 
 ## Algoritmo de Chandy-Lamport
 
-(Não sei se é importante, eu não entendi bem e não tiveram exercícios sobre isso no caderno de problemas. Talvez seja melhor só entender bem os cortes em si)
+(Retirado da wikipedia, mas explica bem)
+
+1. The observer process (the process taking a snapshot):
+    - Saves its own local state
+    - Sends a snapshot request message bearing a snapshot token to all other processes (nos exercícios é normalmente a próxima mensagem enviada)
+2. A process receiving the snapshot token for the first time on any message:
+    - Sends the observer process its own saved state (não representado nos gráficos)
+    - Attaches the snapshot token to all subsequent messages (to help propagate the snapshot token)
+3. When a process that has already received the snapshot token receives a message that does not bear the snapshot token, this process will forward that message to the observer process. This message was obviously sent before the snapshot "cut off" (as it does not bear a snapshot token and thus must have come from before the snapshot token was sent out) and needs to be included in the snapshot.
+
+### Exemplo Simples
 
 ![alt text](imgs/Chandy-Lamport.png)
+
+### Exemplo Mais Complexo
+
+![alt text](imgs/Chandy-Lamport_2.png)
 
 
 
@@ -833,3 +847,8 @@ $K_3 = K_b^+$
 - Assim, depois de Bob obter _m_ ele pode aplicar a hash à mensagem, usar a chave pública de A em  $K_a^-(H(M))$, e ver se os resultados são os mesmos
   - $K_a^+(K_a^-(H(M))) = H(M)$
   - Isto garante que a mensagem foi enviada por A
+
+
+### Exemplo de envio de mensagem assinada (sem encriptar)
+
+![alt text](imgs/envio_assinado_sem_encriptacao.png)
